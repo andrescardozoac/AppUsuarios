@@ -1,0 +1,212 @@
+<div class="container mt-5">
+  <div class="row">
+    <div class="col-lg-8 offset-lg-2">
+      <div class="card">
+        <div class="card-body">
+          <h3 class="titulo"> USUARIOS Y ROLES</h3>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mt-4">
+    <div class="col-lg-6">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="titulo"> {{ accion | uppercase}} USUARIO</h5>
+
+          <form [formGroup]="formUsuario" (ngSubmit)="agregarUsuario()">
+
+            <div class="input-group imput-group-lg mb-3">
+              <span class="input-group-text"><i class="fas fa-user"
+                  [class.green-icon]="this.formUsuario.get('login')?.valid"
+                  [class.red-icon]="this.formUsuario.get('login')?.invalid && this.formUsuario.get('login')?.touched">
+                </i></span>
+              <input formControlName="login" type="text" class="form-control" placeholder="Login">
+            </div>
+
+            <div class="input-group imput-group-lg mb-3">
+              <span class="input-group-text"><i class="fas fa-key"
+                  [class.green-icon]="this.formUsuario.get('password')?.valid"
+                  [class.red-icon]="this.formUsuario.get('password')?.invalid && this.formUsuario.get('password')?.touched"></i></span>
+              <input formControlName="password" maxlength="10" type="password" class="form-control"
+                placeholder="Contraseña">
+            </div>
+
+            <div class="input-group imput-group-lg mb-3">
+              <span class="input-group-text"><i class="fas fa-user-tag"
+                  [class.green-icon]="this.formUsuario.get('nombre')?.valid"
+                  [class.red-icon]="this.formUsuario.get('nombre')?.invalid && this.formUsuario.get('nombre')?.touched"></i></span>
+              <input formControlName="nombre" type="text" class="form-control" placeholder="Nombre Completo">
+            </div>
+
+
+
+            <div class="d-grid gap-2">
+              <button [disabled]="this.formUsuario.invalid" type="submit" class="btn btn-success btn-lg"><i
+                  class="fas fa-database"></i>&nbsp;Aceptar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-6">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="titulo">LISTA DE USUARIOS</h5>
+
+          <div class="input-group mb-3">
+            <label class="input-group-text" for="inputGroupSelect01"><i class="fas fa-list"></i></label>
+            <select class="form-control" #t (change)="capturar(t.value)">
+              <option value="0">Selecciona una opción</option>
+              <option *ngFor="let dato of datos" [value]="dato">
+                {{dato}}
+              </option>
+            </select>
+          </div>
+
+          <cdk-virtual-scroll-viewport itemSize="20" *ngIf="mostrarTablaUsuario">
+
+            <table class="table" id="tablaUsuario" name="tablaUsuario">
+              <tbody>
+                <tr>
+                  <th>ID</th>
+                  <th>Login</th>
+                  <th>Nombre</th>
+                </tr>
+                <tr *cdkVirtualFor="let usuario of listarUsuarios">
+                  <td>{{usuario.idUsuario}}</td>
+                  <td>{{usuario.login}}</td>
+                  <td>{{usuario.nombre}}</td>
+                  <td>
+                    <i (click)="editarUsuario(usuario)" class="fas fa-user-edit text-info"></i></td>
+                  <td>
+                    <i (click)="eliminarUsuario(usuario.idUsuario)" class="fas fa-user-times text-danger"></i></td>
+                </tr>
+              </tbody>
+            </table>
+
+          </cdk-virtual-scroll-viewport>
+          <cdk-virtual-scroll-viewport itemSize="20" *ngIf="mostrarTablaUsuarioRoles">
+            <table class="table" id="tablaUsuariosRoles" name="tablaUsuariosRoles">
+              <tbody>
+                <tr>
+                  <th>Login</th>
+                  <th>Rol</th>
+                </tr>
+                <tr *cdkVirtualFor="let usuarioRol of listarUsuariosRol">
+
+                  <td>{{usuarioRol.login}}</td>
+                  <td>{{usuarioRol.nombreRol}}</td>
+                  <td>
+                    <i (click)="editarUsuarioRol(usuarioRol)" class="fas fa-user-edit text-info"></i></td>
+                  <td>
+                    <i (click)="eliminarUsuarioRol(usuarioRol.idUsuarios_Roles)" class="fas fa-user-times text-danger"></i></td>
+                </tr>
+              </tbody>
+            </table>
+
+
+          </cdk-virtual-scroll-viewport>
+          <cdk-virtual-scroll-viewport itemSize="20" *ngIf="mostrarRoles">
+            <table class="table">
+              <tbody>
+                <tr>
+
+                  <th>ID Rol</th>
+                  <th>Nombre Rol</th>
+                </tr>
+                <tr *cdkVirtualFor="let rol of listarRoles">
+
+                  <td>{{rol.idRol}}</td>
+                  <td>{{rol.nombreRol}}</td>
+                  <td>
+                    <i (click)="editarRol(rol)" class="fas fa-edit text-info"></i></td>
+                  <td>
+                    <i (click)="eliminarRol(rol.idRol)" class="fas fa-trash-alt text-danger"></i></td>
+                </tr>
+
+              </tbody>
+            </table>
+          </cdk-virtual-scroll-viewport>
+
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+
+
+  <div class="row mt-4">
+    <div class="col-lg-6">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="titulo"> {{ accion2 | uppercase}} ROL</h5>
+
+          <form [formGroup]="formRol" (ngSubmit)="agregarRol()">
+
+            <div class="input-group imput-group-lg mb-3">
+              <span class="input-group-text"><i class="fas fa-network-wired"
+                  [class.green-icon]="this.formRol.get('nomreRol')?.valid"
+                  [class.red-icon]="this.formRol.get('nombreRol')?.invalid && this.formRol.get('nombreRol')?.touched">
+                </i></span>
+              <input formControlName="nombreRol" type="text" class="form-control" placeholder="Nombre Rol">
+            </div>
+
+
+            <div class="d-grid gap-2">
+              <button [disabled]="this.formRol.invalid" type="submit" class="btn btn-success btn-lg"><i
+                  class="fas fa-database"></i>&nbsp;Aceptar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+
+  <div class="row mt-4">
+    <div class="col-lg-6">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="titulo"> {{ accion3 | uppercase}} USUARIO - ROL </h5>
+
+          <form [formGroup]="formRolUsuario" (ngSubmit)="agregarRolUsuario()">
+
+            <div class="input-group mb-3">
+              <label class="input-group-text" for="inputGroupSelect01"><i class="fas fa-user"
+                  [class.green-icon]="this.formRolUsuario.get('idUsuario')?.valid"
+                  [class.red-icon]="this.formRolUsuario.get('idUsuario')?.invalid && this.formRolUsuario.get('idUsuario')?.touched"></i></label>
+              <select formControlName="idUsuario" class="form-select" id="inputGroupSelect03">
+                <option *ngFor="let usuario of listarUsuarios" [ngValue]=usuario.idUsuario>{{usuario.login}}</option>
+              </select>
+            </div>
+
+         
+            <div class="input-group mb-3">
+              <label class="input-group-text" for="inputGroupSelect01"><i class="fas fa-network-wired"
+                  [class.green-icon]="this.formRolUsuario.get('idRol')?.valid"
+                  [class.red-icon]="this.formRolUsuario.get('idRol')?.invalid && this.formRolUsuario.get('idRol')?.touched"></i></label>
+              <select formControlName="idRol" class="form-select" id="inputGroupSelect04">
+                <option *ngFor="let rol of listarRoles" [ngValue]=rol.idRol>{{rol.nombreRol}}</option>
+              </select>
+            </div>
+
+
+            <div class="d-grid gap-2">
+              <button [disabled]="this.formRolUsuario.invalid" type="submit" class="btn btn-success btn-lg"><i
+                  class="fas fa-database"></i>&nbsp;Aceptar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+
+
+</div>
